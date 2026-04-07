@@ -1,4 +1,11 @@
 # 🌱 Smart Farming Solution using Arduino & HOG
+## 🎥 Project Demo
+
+[![Watch the video](https://img.youtube.com/vi/swnv-ujnWT0/0.jpg)](https://youtu.be/swnv-ujnWT0)
+
+Click the thumbnail above to watch the full capstone demo on YouTube.
+
+---
 
 ## 📌 Project Overview
 This capstone project explores how **IoT and computer vision** can transform agriculture.  
