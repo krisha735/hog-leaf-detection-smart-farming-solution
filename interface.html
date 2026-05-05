@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaf Deficiency Checker</title>
+    <style>
+      
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid black;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+        #capturedImage {
+            max-width: 100%;
+            max-height: 60vh; /* Set maximum height to 60% of the viewport height */
+            display: block;
+            margin: 0 auto; /* Center the image horizontally */
+        }
+        #progress {
+            display: none;
+            width: 100%;
+            background: #ccc;
+        }
+        #progress div {
+            width: 0;
+            height: 30px;
+            background: green;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+        #brightnessSlider {
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 20px;
+        }
+        #footer {
+            font-family: Times New Roman;
+            font-weight: bold;
+            background-color: #34495e;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+			width: 96.8%;
+			
+		}
+    </style>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='Farming_Header.gif') }}" alt="Header GIF">
+    </header>
+
+    <h1>Leaf Deficiency Checker</h1>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput">
+        <button type="submit">Upload</button>
+    </form>
+    <button id="captureButton">Capture</button>
+
+    <div id="popup">
+        <h2>Confirm Image</h2>
+        <img id="capturedImage" src="" alt="Captured Image" style="filter: brightness(1);">
+        <br>
+        <label for="brightnessSlider">Adjust Brightness:</label>
+        <input type="range" id="brightnessSlider" min="0.5" max="2" step="0.01" value="1">
+        <br>
+        <button id="confirmButton">Confirm</button>
+        <button onclick="retakeImage()">Retake</button>
+        <button onclick="cancelImage()">Cancel</button>
+    </div>
+
+    <div id="progress">
+        <div id="progressBar">0%</div>
+    </div>
+
+    <h2>Result: <span id="result"></span></h2>
+
+    <script>
+        let formData;
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            formData = new FormData();
+            const fileInput = document.getElementById('fileInput');
+            formData.append('file', fileInput.files[0]);
+
+            showPopup(URL.createObjectURL(fileInput.files[0]));
+        });
+
+        document.getElementById('captureButton').addEventListener('click', function() {
+            fetch('/capture_image') // Replace this with the endpoint to fetch the image from Arduino
+                .then(response => response.blob())
+                .then(blob => {
+                    const imageUrl = URL.createObjectURL(blob);
+                    formData = new FormData();
+                    formData.append('file', blob, 'captured_image.jpg'); // Append blob as file
+                    showPopup(imageUrl);
+                });
+        });
+
+        document.getElementById('brightnessSlider').addEventListener('input', function() {
+            const brightnessValue = this.value;
+            document.getElementById('capturedImage').style.filter = `brightness(${brightnessValue})`;
+        });
+
+        document.getElementById('confirmButton').addEventListener('click', confirmImage);
+
+        function showPopup(imageSrc) {
+            document.getElementById('capturedImage').src = imageSrc;
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function confirmImage() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('progress').style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressBar').innerText = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    fetch('/upload', { method: 'POST', body: formData })
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('progress').style.display = 'none';
+                            document.getElementById('result').innerText = data.result;
+                        })
+                        .catch(error => {
+                            console.error('Error during image processing:', error);
+                            document.getElementById('progress').style.display = 'none';
+                            document.getElementById('result').innerText = 'Failed to process the image.';
+                        });
+                }
+            }, 500);
+        }
+
+        function retakeImage() {
+            document.getElementById('popup').style.display = 'none';
+            // Optional: implement any additional logic to retake the image
+        }
+
+        function cancelImage() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+
+    <div id="footer">
+        Copyright &copy; Krisha A/P Nandakumar
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Farming Solution - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 0;
+            background-image: url("{{ url_for('static', filename='Leaf.jpg') }}");
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: rgba(0, 128, 128, 0.9);
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        /* Header */
+        #header {
+            text-align: center;
+            background-color: rgba(0, 128, 128, 0.8);
+            padding: 10px;
+        }
+        #header img {
+            max-width: 40%;
+            display: block;
+            margin: 0 auto;             
+        }
+
+        /* Content */
+        #content {
+            background-color: rgba(255, 255, 255, 0.7);
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1, h2, p {
+            text-align: center;
+            color: #800000;
+        }
+
+        /* Footer */
+        #footer {
+            font-family: 'Times New Roman';
+            font-weight: bold;
+            background-color: rgba(240, 230, 140, 0.8);
+            color: #36454F;
+            text-align: center;
+            padding: 8px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header">
+        <img src="{{ url_for('static', filename='Farming_Header.gif') }}" alt="Header GIF">    
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="/">Home</a>
+        <a href="/interface">Leaf Deficiency Checker</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <h1>Welcome to the Smart Farming Solution</h1>
+        <p>This system helps automate irrigation and detect leaf deficiencies.</p>
+        <h2>Automate Irrigation Status</h2>
+        <p>Moisture Level: {{ moisture_level }}</p>
+        <p>Water Pump: {{ pump_status }}</p>
+        <p>Click below to check plant health.</p>
+        <a href="/interface" style="display: inline-block; background: teal; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Go to Leaf Deficiency Checker</a>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+        Copyright &copy; Krisha A/P Nandakumar @ 2025 DCSC CAPSTONE
+    </div>
+</body>
+</html>
